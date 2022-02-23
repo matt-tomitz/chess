@@ -27,12 +27,9 @@ def onClick(square: Square, board:Board):
             deselectSquare(board)
             movePiece(selected, square, board)
 
-            #jank
             board.lastMovedPiece = square.occupyingPiece
             board.lastMovedPiece.ping()
 
-
-            
         else:
             #flash red or something
             deselectSquare(board)
@@ -50,13 +47,13 @@ def selectSquare(square, board):
         if piece.team == board.activePlayer:
             board.selectedSquare = square
         else:
-            if board.selectedSquare: hideMoves(board.selectedSquare.piece, board)
+            #if board.selectedSquare: hideMoves(board.selectedSquare.piece, board)
             board.selectedSquare = square
         #showMoves(piece, board)
 
 
 def deselectSquare(board):
-    hideMoves(board.selectedSquare.occupyingPiece, board)
+    #hideMoves(board.selectedSquare.occupyingPiece, board)
     board.selectedSquare = None
 
 def showMoves(piece: Piece, board):
@@ -76,6 +73,9 @@ def movePiece(origin: Square, destination: Square, board: Board):
     #castling
     y = 0 if origin.occupyingPiece.team == "Black" else 7
     castle = type(origin.occupyingPiece) == King and (origin.x, origin.y) == (4,y) and destination in [board.getSquare(1, y), board.getSquare(6, y)]
+
+    if destination.occupyingPiece:
+        destination.occupyingPiece.vacate()
 
     destination.occupyingPiece = origin.occupyingPiece
     destination.widget["image"] = images[origin.occupyingPiece.char]
